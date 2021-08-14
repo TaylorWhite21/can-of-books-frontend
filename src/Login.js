@@ -1,22 +1,36 @@
+  
+// this came from Auth0 DOCS
+// https://auth0.com/docs/quickstart/spa/react#add-login-to-your-application
+
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import Card from 'react-bootstrap/Card';
 import './Login.css';
+import { useAuth0 } from "@auth0/auth0-react";
+import Button from 'react-bootstrap/Button'
+import axios from 'axios'
 
-class Login extends React.Component {
-  render() {
-    return(
-      <Card style={{ width: '18rem' }}>
-        <Card.Body>
-          <Card.Title>Log In</Card.Title>
-          <Card.Text>
-            Click Below to Log In
-          </Card.Text>
-          {/* TODO: add a `LoginButton` component here that will log the user in with Auth0 */}
-        </Card.Body>
-      </Card>
-    )
-  }
-}
+  // Borrowed from demo code
+  const makeRequest = async() => {
 
-export default Login;
+    const { getIdTokenClaims } = this.props.auth0;
+    let tokenClaims = await getIdTokenClaims();
+    const jwt = tokenClaims.__raw;
+    const config = {
+      headers: {"Authorization" : `Bearer ${jwt}`},
+    };
+
+    const serverResponse = await axios.get('http://localhost:3000/test', config);
+
+    console.log('it worked if data:  ', serverResponse);
+  };
+
+const LoginButton = () => {
+
+  const { loginWithRedirect } = useAuth0();
+
+  
+  return <Button variant="primary" onClick={() => {loginWithRedirect(); makeRequest();}}>Log In</Button>;
+};
+
+
+export default LoginButton;
