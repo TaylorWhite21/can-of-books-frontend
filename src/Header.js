@@ -7,8 +7,6 @@ import { withAuth0 } from '@auth0/auth0-react';
 import Login from './Login';
 import Logout from './Logout';
 
-// const {isAuthenticated } = this.props.auth0;
-
 class Header extends React.Component {
   render() {
     return(

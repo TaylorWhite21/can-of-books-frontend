@@ -1,4 +1,4 @@
-// this came from Auth0 DOCS
+// This came from Auth0 DOCS
 // https://auth0.com/docs/quickstart/spa/react#add-login-to-your-application
 
 import React from "react";
