@@ -27,11 +27,9 @@ class BrowserRouter extends React.Component {
             <Header />
             <Switch>
               <Route exact path="/">
-                {/*DONE!!!!  TODO: if the user is logged in, render the `BestBooks` component, if they are not, render the `Login` component */}
                 {this.props.auth0.isAuthenticated ? <BestBooks /> : <Login />}
               </Route>
               <Route exact path="/profile">
-                {/*DONE:  TODO: add a route with a path of '/profile' that renders a `Profile` component */}
                 {this.props.auth0.isAuthenticated ? <Profile /> : ' I am here'}
               </Route>
             </Switch>
