@@ -10,6 +10,7 @@ import Modal from 'react-bootstrap/Modal'
 import Form from 'react-bootstrap/Form'
 
 class BookFormModal extends React.Component {
+
   handleSubmit = (e) => {
     e.preventDefault();
     let title = e.target.title.vale;
@@ -18,11 +19,11 @@ class BookFormModal extends React.Component {
     let status = e.target.status.value;
     this.props.handleAddBook({ title, description, status });
   }
+
   render() {
 
 
     return (
-
 
       <Modal show={props.show} onHide={props.handleClose}>
         <Modal.Header closeButton>

@@ -7,6 +7,8 @@ import { withAuth0 } from '@auth0/auth0-react';
 import Card from 'react-bootstrap/Card'
 import CardColumns from 'react-bootstrap/CardColumns'
 import AddBook from './AddBook.js'
+import Button from 'react-bootstrap/Button';
+import DeleteBook from './DeleteBook';
 
 class MyFavoriteBooks extends React.Component {
   constructor(props) {
@@ -60,6 +62,18 @@ class MyFavoriteBooks extends React.Component {
     }
   };
 
+  handleDeleteBook = async (id) => {
+    try{
+      await axios.delete(`http://localhost:3001/books/${id}`);
+      let remainingBooks = this.state.books.filter(book => book.id !== id)
+      this.setState({
+        books: remainingBooks
+      });
+    } catch(err){
+      console.log(err);
+    }
+  };
+
   render() {
     return (
       <>
@@ -76,13 +90,14 @@ class MyFavoriteBooks extends React.Component {
                 <Card.Text>{book.description}</Card.Text>
                 <h4>{book.email}</h4>
                 <h4>{book.status}</h4>
+                <DeleteBook handleDeleteBook={this.handleDeleteBook(book._id)}/>
               </Card.Body>
             </Card>
             </CardColumns>
           )) : 'error'}
           <button onClick={this.serverRequest}>Click to send to server</button>
           <p>Check the console</p>
-          <AddBook handleAddBook={this.handleAddBook}/>
+          {/* <AddBook handleAddBook={this.handleAddBook}/> */}
         </Jumbotron>
       </>
     )
