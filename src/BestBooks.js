@@ -8,7 +8,6 @@ import Card from 'react-bootstrap/Card'
 import CardColumns from 'react-bootstrap/CardColumns'
 import AddBook from './AddBook.js'
 import Button from 'react-bootstrap/Button';
-import DeleteBook from './DeleteBook';
 
 class MyFavoriteBooks extends React.Component {
   constructor(props) {
@@ -64,8 +63,18 @@ class MyFavoriteBooks extends React.Component {
 
   handleDeleteBook = async (id) => {
     try{
-      await axios.delete(`http://localhost:3001/books/${id}`);
+
+      const { getIdTokenClaims } = this.props.auth0;
+      let tokenClaims = await getIdTokenClaims();
+      const jwt = tokenClaims.__raw;
+      const config = {
+        headers: { "Authorization": `Bearer ${jwt}` },
+        params: {email: this.props.auth0.user.email},
+      };
+
+      await axios.delete(`http://localhost:3001/books/${id}`, config);
       let remainingBooks = this.state.books.filter(book => book.id !== id)
+      console.log(id);
       this.setState({
         books: remainingBooks
       });
@@ -90,14 +99,14 @@ class MyFavoriteBooks extends React.Component {
                 <Card.Text>{book.description}</Card.Text>
                 <h4>{book.email}</h4>
                 <h4>{book.status}</h4>
-                <DeleteBook handleDeleteBook={this.handleDeleteBook(book._id)}/>
+                <Button variant="primary" onClick={() => {this.handleDeleteBook(book._id)}}>Delete Book</Button>
               </Card.Body>
             </Card>
             </CardColumns>
           )) : 'error'}
           <button onClick={this.serverRequest}>Click to send to server</button>
           <p>Check the console</p>
-          {/* <AddBook handleAddBook={this.handleAddBook}/> */}
+          <AddBook handleAddBook={this.handleAddBook}/>
         </Jumbotron>
       </>
     )
