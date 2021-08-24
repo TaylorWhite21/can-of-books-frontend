@@ -25,7 +25,7 @@ class BookFormModal extends React.Component {
 
     return (
 
-      <Modal show={props.show} onHide={props.handleClose}>
+      <Modal show={this.props.show} onHide={this.props.handleClose}>
         <Modal.Header closeButton>
           <Modal.Title>Modal heading</Modal.Title>
         </Modal.Header>
@@ -53,7 +53,7 @@ class BookFormModal extends React.Component {
           </Form>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={props.handleClose}>
+          <Button variant="secondary" onClick={this.props.handleClose}>
             Close
           </Button>
           <Button variant="primary" type='submit'>
@@ -65,4 +65,4 @@ class BookFormModal extends React.Component {
   }
 };
 
-export deafult withAuth0(BookFormModal);
+export default withAuth0(BookFormModal);
