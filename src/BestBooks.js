@@ -16,7 +16,8 @@ class MyFavoriteBooks extends React.Component {
     super(props);
     this.state = {
       books: [],
-      showModal: false,
+      showUpdateModal: false,
+      showAddModal: false,
       selectedBook: null
     }
   };
@@ -25,10 +26,20 @@ class MyFavoriteBooks extends React.Component {
     this.setState({ showModal: false, });
   };
 
+  handleAddClose = () => {
+    this.setState({ showAddModal: false, });
+  };
+
   handleShow = (book) => {
     this.setState({
       showModal: true,
       selectedBook: book
+    });
+  };
+
+  handleAddShow = () => {
+    this.setState({
+      showAddModal: true
     });
   };
 
@@ -41,11 +52,10 @@ class MyFavoriteBooks extends React.Component {
       params: { email: this.props.auth0.user.email },
     };
 
-    const results = await axios.get('http://localhost:3001/books', config);
+    const results = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/books`, config);
     this.setState({
       books: results.data,
     });
-    console.log(this.state.books)
   };
 
   // Borrowed from demo code
@@ -54,19 +64,18 @@ class MyFavoriteBooks extends React.Component {
     const { getIdTokenClaims } = this.props.auth0;
     let tokenClaims = await getIdTokenClaims();
     const jwt = tokenClaims.__raw;
-    console.log(jwt)
     const config = {
       headers: { "Authorization": `Bearer ${jwt}` },
     };
 
-    const serverResponse = await axios.get('http://localhost:3001/books', config);
+    const serverResponse = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/books`, config);
 
     console.log('it worked if data:  ', serverResponse);
   };
 
   handleAddBook = async (bookInfo) => {
     try {
-      let addbook = await axios.post('http://localhost:3001/books', bookInfo);
+      let addbook = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/books`, bookInfo);
       let newBook = addbook.data;
       this.setState({
         books: [...this.state.books, newBook],
@@ -87,9 +96,8 @@ class MyFavoriteBooks extends React.Component {
         params: { email: this.props.auth0.user.email },
       };
 
-      await axios.delete(`http://localhost:3001/books/${id}`, config);
+      await axios.delete(`${process.env.REACT_APP_BACKEND_URL}/books/${id}`, config);
       let remainingBooks = this.state.books.filter(book => book.id !== id)
-      console.log(id);
       this.setState({
         books: remainingBooks
       });
@@ -100,22 +108,24 @@ class MyFavoriteBooks extends React.Component {
 
   handleUpdate = async (book) => {
     try {
-      await axios.put(`http://localhost:3001/books/${book._id}`, book);
+      await axios.put(`${process.env.REACT_APP_BACKEND_URL}/books/${book._id}`, book);
+      console.log(book)
     } catch (error) {
       console.log(error);
     }
     const updateBook = this.state.books.map(bookState => {
       if (bookState._id === book._id) {
         return book
+
       } else {
         return bookState;
       }
     })
+
     this.setState({ books: updateBook });
   };
 
   render() {
-    console.log('Books', this.state.selectedBook)
     return (
       <>
         <Jumbotron>
@@ -133,7 +143,7 @@ class MyFavoriteBooks extends React.Component {
                   <h4>{book.email}</h4>
                   <h4>{book.status}</h4>
                   <Button variant='primary' onClick={() => this.handleShow(book)}>Update</Button>
-                  <Button variant="primary" onClick={() => { this.handleDeleteBook(book._id) }}>Delete Book</Button>
+                  <Button variant="primary" onClick={() => this.handleDeleteBook(book._id)}>Delete Book</Button>
 
                 </Card.Body>
               </Card>
@@ -147,7 +157,11 @@ class MyFavoriteBooks extends React.Component {
           )) : 'error'}
           <button onClick={this.serverRequest}>Click to send to server</button>
           <p>Check the console</p>
-          <AddBook handleAddBook={this.handleAddBook} />
+
+          <Button variant='primary' onClick={this.handleAddShow}>Add Book</Button>
+          <Modal show={this.state.showAddModal} onHide={this.handleAddClose}>
+          <AddBook handleAddBook={this.handleAddBook} handleShow={this.handleAddShow} handleAddClose={this.handleAddClose} />
+          </Modal>
         </Jumbotron>
       </>
     )

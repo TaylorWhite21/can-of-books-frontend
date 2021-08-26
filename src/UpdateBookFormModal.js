@@ -14,18 +14,21 @@ class UpdateBookFormModal extends React.Component {
     this.state = {
       _id: this.props.book._id,
       title: this.props.book.title,
-      description: this.props.book.description,
+      description: this.props.description,
+      email: this.props.auth0.user.email,
       status: this.props.book.status,
     }
   }
 
   handleSubmit = (e) => {
     e.preventDefault();
+  
     this.props.handleUpdate(this.state);
+    console.log('handlesubmit state', this.state)
     this.props.handleClose();
   }
 
-  handleName = (e) => {
+  handleTitle = (e) => {
     e.preventDefault();
     this.setState({
       title: e.target.value
@@ -33,13 +36,12 @@ class UpdateBookFormModal extends React.Component {
   }
 
   handleDescription = (e) => {
-    e.preventDefault();
     this.setState({
       description: e.target.value
     })
   }
 
-  handleStaus = (e) => {
+  handleStatus = (e) => {
     e.preventDefault();
     this.setState({
       status: e.target.value
@@ -47,33 +49,30 @@ class UpdateBookFormModal extends React.Component {
   }
 
   render() {
-
-    console.log('State Test', this.state)
     return (
-
-      // <Modal show={this.props.show} onHide={this.props.handleClose}>
       <>
-      <Form onSubmit = { this.handleSubmit } >
-            <Form.Group controlId="title">
-              <Form.Label>Book Title</Form.Label>
-              <Form.Control type="text" onChange={this.handleTitle} placeholder={this.state.title} />
-            </Form.Group>
+        <Form onSubmit={this.handleSubmit} >
+          <Form.Group controlId="title">
+            <Form.Label>Book Title</Form.Label>
+            <Form.Control type="text" onChange={this.handleTitle} value={this.state.title} />
+          </Form.Group>
 
-            <Form.Group controlId="description">
-              <Form.Label>Book Description</Form.Label>
-              <Form.Control type="text" onChange={this.handledescription} placeholder={this.state.description} />
-            </Form.Group>
+          <Form.Group controlId="description">
+            <Form.Label>Book Description</Form.Label>
+            <Form.Control type="text" onChange={(e) => this.setState({ description: e.target.value})} value={this.state.description} />
+          </Form.Group>
 
-            <Form.Group controlId="status">
-              <Form.Label>Book Status</Form.Label>
-              <Form.Control type="text"onChange={this.handleStatus} placeholder={this.state.status} />
-            </Form.Group>
-          </Form >
+          <Form.Group controlId="status">
+            <Form.Label>Book Status</Form.Label>
+            <Form.Control type="text" onChange={this.handleStatus} value={this.state.status} />
+          </Form.Group>
+          <Button variant="primary" type='submit' >
+          Update Book
+          </Button>
+        </Form >
 
-      <Button variant="primary" onClick={this.props.handleClose}>
-        Update Book
-      </Button>
-    </>
+
+      </>
     )
   }
 };
